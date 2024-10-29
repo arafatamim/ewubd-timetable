@@ -1,0 +1,32 @@
+[package]
+name = "ewubd-timetable-calendar"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "ewubd_timetable_calendar_lib"
+path = "src/lib/mod.rs"
+
+[[bin]]
+name = "ewubd-timetable-calendar"
+path = "src/server/mod.rs"
+
+[[bin]]
+name = "cli"
+path = "src/cli/mod.rs"
+
+[dependencies]
+actix-web = "4.9.0"
+chrono = { version = "0.4.38", features = ["serde"] }
+env_logger = "0.11.5"
+futures = "0.3.31"
+ics = "0.5.8"
+maud = { version = "0.26.0", features = ["actix-web"] }
+memoize = "0.4.2"
+regex = "1.11.0"
+reqwest = { version = "0.12.8", features = ["blocking", "json"] }
+scraper = "0.20.0"
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.132"
+tokio = { version = "1.40.0", features = ["full"] }
+xxhash-rust = { version = "0.8.12", features = ["xxh3"] }
