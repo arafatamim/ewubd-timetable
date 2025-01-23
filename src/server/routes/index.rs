@@ -58,7 +58,7 @@ pub async fn login(form: web::Form<LoginData>) -> impl Responder {
         second_num,
     )
     .await
-    .map_err(|_| actix_web::error::ErrorUnauthorized("Authorization failed"))?;
+    .map_err(|err| actix_web::error::ErrorUnauthorized(err.to_string()))?;
 
     let mut cookie = String::new();
     cookie.push_str(&session_id);

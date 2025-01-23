@@ -34,7 +34,7 @@ pub async fn dashboard(req: HttpRequest) -> Result<Markup, error::Error> {
                     label for="semester" { "Select Semester" };
                     select id="semester" name="semester" {
                         @for semester in semesters {
-                            option value=(semester.id) { (semester.name) }
+                            option value=(format!("{} {}", semester.id, semester.name)) { (semester.name) }
                         }
                     };
                     br;
@@ -49,7 +49,7 @@ pub async fn dashboard(req: HttpRequest) -> Result<Markup, error::Error> {
 
 #[derive(Deserialize)]
 struct TimetableForm {
-    semester: u16,
+    semester: String,
 }
 
 #[post("/dashboard/timetable")]
@@ -61,7 +61,11 @@ pub async fn timetable(
 
     let client = utils::build_authenticated_client(&session_cookie)?;
 
-    let courses = courses::get_courses(&client, form.semester)
+    let mut semester_param = form.semester.split(" ");
+    let semester_id = semester_param.next().unwrap().parse::<u16>().unwrap();
+    let semester_name = semester_param.next().unwrap();
+
+    let courses = courses::get_courses(&client, semester_id)
         .await
         .map_err(
             |e| match e.downcast_ref::<reqwest::Error>().and_then(|e| e.status()) {
@@ -71,7 +75,7 @@ pub async fn timetable(
         )?;
 
     let body = page(
-        &format!("Timetable for Semester ID {}", form.semester),
+        &format!("Timetable for Semester {}", form.semester),
         true,
         html! {
             table {
@@ -99,9 +103,9 @@ pub async fn timetable(
             article {
                 h2 { "Generate timetable calendar" }
                 form action="/dashboard/timetable/generate" method="post" {
-                    input type="hidden" name="semester_id" value=(form.semester);
+                    input type="hidden" name="semester_id" value=(semester_id);
                     label for="semester_name" { "Semester Name" };
-                    input type="text" name="semester_name" required;
+                    input type="text" name="semester_name" value=(semester_name);
                     br;
                     label for="start_date" { "Semester Start Date" };
                     input type="date" name="start_date" placeholder="Start Date" required;

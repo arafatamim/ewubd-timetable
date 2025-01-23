@@ -65,7 +65,7 @@ async fn auth_middleware(
                 false,
                 html! {
                     p {
-                        mark { "Session expired or invalid credentials. Please login again." }
+                        mark { "Please login again. Possible errors: session expired, invalid credentials, or login blocked." };
                     }
                     form action="/" method="post" {
                         input type="text" name="username" placeholder="Student ID";

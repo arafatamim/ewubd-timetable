@@ -82,14 +82,25 @@ pub async fn authenticate<'a>(
         let html = res.text().await?;
         let doc = Html::parse_document(&html);
 
-        let welcome_msg_selector = Selector::parse(".nav-user > span")?;
-        let welcome_msg = doc
-            .select(&welcome_msg_selector)
+        let error_msg_selector = Selector::parse(".error")?;
+        let error_msg = doc
+            .select(&error_msg_selector)
             .next()
-            .map(|v| v.text().collect::<String>())
-            .ok_or("Welcome msg not found")?;
+            .map(|v| v.text().collect::<String>());
 
-        Ok(welcome_msg)
+        match error_msg {
+            Some(msg) => Err(msg.into()),
+            _ => {
+                let welcome_msg_selector = Selector::parse(".nav-user > span")?;
+                let welcome_msg = doc
+                    .select(&welcome_msg_selector)
+                    .next()
+                    .map(|v| v.text().collect::<String>())
+                    .ok_or("Welcome msg not found")?;
+
+                Ok(welcome_msg)
+            }
+        }
     } else {
         Err(res.text().await?.into())
     }
