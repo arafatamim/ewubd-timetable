@@ -25,6 +25,7 @@ pub fn page(title: &str, logout: bool, body: Markup) -> Markup {
                             li { strong { a href="/" { "EWU Timetable" } } }
                         }
                         ul {
+                            li { a href="https://github.com/arafatamim/ewubd-timetable" { "Source code" } }
                             @if logout {
                                 li { a href="/logout" { "Logout" } }
                             }
