@@ -23,6 +23,7 @@ pub fn build_headers(session_id: &str) -> header::HeaderMap {
 pub fn build_authenticated_client(session_id: &str) -> Result<reqwest::Client, Box<dyn Error>> {
     let headers = build_headers(session_id);
     let client = reqwest::Client::builder()
+        .use_rustls_tls()
         .default_headers(headers)
         .build()?;
     Ok(client)
@@ -36,7 +37,8 @@ pub fn get_session_cookie(req: &actix_web::HttpRequest) -> Result<String, actix_
 
     match cookie {
         Some(cookie) => Ok(cookie.to_string()),
-        None => Err(actix_web::error::ErrorUnauthorized("Session cookie not found")),
+        None => Err(actix_web::error::ErrorUnauthorized(
+            "Session cookie not found",
+        )),
     }
 }
-

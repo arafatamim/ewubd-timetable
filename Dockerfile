@@ -18,6 +18,5 @@ FROM debian:bookworm-slim AS runtime
 
 RUN apt update -y && apt install openssl -y
 
-WORKDIR /app
 COPY --from=builder /app/app /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/app"]

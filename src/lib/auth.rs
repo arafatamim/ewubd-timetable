@@ -9,6 +9,7 @@ use reqwest::{
 
 pub async fn fetch_login_page() -> Result<Response, Box<dyn Error>> {
     let client = reqwest::Client::builder()
+        .use_rustls_tls()
         .default_headers({
             let mut headers = header::HeaderMap::new();
             headers.insert(
