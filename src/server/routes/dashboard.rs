@@ -85,7 +85,7 @@ pub async fn timetable(
                     th { "Lecturer" }
                     th { "Periods" }
                 }
-                @for course in courses {
+                @for course in &courses {
                     tr {
                         td { (course.course_code) }
                         td { (course.section) }
@@ -105,7 +105,7 @@ pub async fn timetable(
                 form action="/dashboard/timetable/generate" method="post" {
                     input type="hidden" name="semester_id" value=(semester_id);
                     label for="semester_name" { "Semester Name" };
-                    input type="text" name="semester_name" value=(semester_name);
+                    input type="text" name="semester_name" value=(semester_name.replace("-", " "));
                     br;
                     label for="start_date" { "Semester Start Date" };
                     input type="date" name="start_date" placeholder="Start Date" required;
@@ -115,11 +115,6 @@ pub async fn timetable(
                     br;
                     input type="submit" value="Generate Calendar";
                 }
-                // p {
-                // }
-                // p {
-                //     a href=(format!("/dashboard/timetable/download?semester={}", query.semester)) target="_blank" { "Download as iCal" }
-                // }
             }
         },
     );
